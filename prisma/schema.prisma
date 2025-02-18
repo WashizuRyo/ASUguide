@@ -8,6 +8,80 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  Review Review[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Syllabus {
+  syllabusId   Int    @id @default(autoincrement())
+  year         Int
+  offering     String
+  period       String
+  day          String
+  name         String
+  instructor   String
+  facultyId    Int
+  departmentId Int
+
+  faculty    Faculty    @relation(fields: [facultyId], references: [facultyId])
+  department Department @relation(fields: [departmentId], references: [departmentId])
+  Review     Review[]
+}
+
+model Faculty {
+  facultyId Int    @id @default(autoincrement())
+  name      String @unique
+
+  Department Department[]
+  syllabus   Syllabus[]
+}
+
+model Department {
+  departmentId Int    @id @default(autoincrement())
+  name         String @unique
+  facultyId    Int
+
+  faculty  Faculty    @relation(fields: [facultyId], references: [facultyId])
+  syllabus Syllabus[]
+}
+
+model Review {
+  reviewId   Int      @id @default(autoincrement())
+  syllabusId Int
+  userId     String
+  rating     Int
+  comment    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id])
+  syllabus Syllabus @relation(fields: [syllabusId], references: [syllabusId])
 }
