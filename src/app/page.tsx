@@ -1,14 +1,7 @@
-import { signIn } from '@/auth'
+import ReviewList from '@/components/reviews/ReviewList'
+import fetchLatestReviews from '@/model/review'
 
-export default async function Page() {
-  return (
-    <form
-      action={async () => {
-        'use server'
-        await signIn('google')
-      }}
-    >
-      <button type="submit">Signin with Google</button>
-    </form>
-  )
+export default async function TopPage() {
+  const latestReviews = await fetchLatestReviews()
+  return <ReviewList reviews={latestReviews} />
 }
