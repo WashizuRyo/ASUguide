@@ -47,13 +47,14 @@ model Syllabus {
   period       String
   day          String
   name         String
-  instructor   String
+  instructorId   Int
   facultyId    Int
   departmentId Int
 
   faculty    Faculty    @relation(fields: [facultyId], references: [facultyId])
   department Department @relation(fields: [departmentId], references: [departmentId])
   Review     Review[]
+  syllabus SyllabusInstructor[]
 }
 
 model Faculty {
@@ -84,4 +85,21 @@ model Review {
 
   user     User     @relation(fields: [userId], references: [id])
   syllabus Syllabus @relation(fields: [syllabusId], references: [syllabusId])
+}
+
+model Instructor {
+  instructorId Int @id @default(autoincrement())
+  instructorName String @unique
+
+  syllabusInstructor SyllabusInstructor[]
+}
+
+model SyllabusInstructor {
+  syllabusId  Int
+  instructorId  Int
+
+  syllabus   Syllabus   @relation(fields: [syllabusId], references: [syllabusId], onDelete: Cascade)
+  instructor Instructor @relation(fields: [instructorId], references: [instructorId], onDelete: Cascade)
+
+  @@id([syllabusId, instructorId])
 }
