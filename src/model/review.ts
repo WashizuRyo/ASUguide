@@ -7,7 +7,7 @@ export default async function fetchLatestReviews() {
       orderBy: {
         createdAt: 'desc',
       },
-      take: 10,
+      take: 5,
       include: reviewWithSyllabus.include,
     })
   } catch (err) {
